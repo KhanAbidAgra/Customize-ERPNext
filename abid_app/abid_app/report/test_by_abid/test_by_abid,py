@@ -1,0 +1,40 @@
+import frappe
+
+def create_journal_entry_from_report(report_data, company):
+    sales_accounts = []
+    purchase_accounts = []
+
+    for row in report_data:
+        if row.get("section") == "Sales" and row.get("amount", 0) > 0:
+            sales_accounts.append({
+                "account": row.get("account"),
+                "amount": row.get("amount")
+            })
+        elif row.get("section") == "Purchase" and row.get("amount", 0) > 0:
+            purchase_accounts.append({
+                "account": row.get("account"),
+                "amount": row.get("amount")
+            })
+
+    journal_entry = frappe.new_doc("Journal Entry")
+    journal_entry.company = company
+    journal_entry.posting_date = frappe.utils.nowdate()
+
+    # Add Debit entries (Sales)
+    for account in sales_accounts:
+        journal_entry.append("accounts", {
+            "account": account["account"],
+            "debit_in_account_currency": account["amount"],
+            "credit_in_account_currency": 0,
+        })
+
+    # Add Credit entries (Purchase)
+    for account in purchase_accounts:
+        journal_entry.append("accounts", {
+            "account": account["account"],
+            "debit_in_account_currency": 0,
+            "credit_in_account_currency": account["amount"],
+        })
+
+    journal_entry.insert(ignore_permissions=True)
+    return journal_entry.name

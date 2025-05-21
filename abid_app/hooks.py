@@ -136,6 +136,11 @@ app_license = "mit"
 # Document Events
 # ---------------
 # Hook on document methods and events
+#doc_events = {
+#   "Sales Order": {
+#    "on_submit": "abid_app.custom_folder.sales_order.sales_order.on_submit"
+#}
+#}
 
 # doc_events = {
 # 	"*": {

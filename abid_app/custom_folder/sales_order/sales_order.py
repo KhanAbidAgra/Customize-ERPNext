@@ -66,8 +66,4 @@ def get_available_value(doc):
         },
     )
 
-    for d in bin_data:
-        if d.actual_qty <=0:
-        item_wh_stock.setdefault((d.item_code, d.warehouse), d.actual_qty)
-
     
